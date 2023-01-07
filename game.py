@@ -3,6 +3,7 @@ from pygame.locals import *
 import sys
 
 from main import clock, display
+import resources.shapes as shp
 
 
 class GameBox:
@@ -30,6 +31,8 @@ def run():
 
     background = pg.image.load('data/background.png')
     game_box = GameBox()
+    pieces = [Piece(shp.random_shape())]
+    level = 1
 
     while True:
         clock.tick(60)
@@ -39,6 +42,21 @@ def run():
             if event.type == QUIT or event.type == WINDOWCLOSE:
                 pg.quit()
                 sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    pass  # move left
+                if event.key == K_RIGHT:
+                    pass  # move right
+                if event.key in (K_UP, K_x):
+                    pass  # rotate clockwise
+                if event.key in (K_RCTRL, K_LCTRL, K_z):
+                    pass  # rotate counterclockwise
+                if event.key == K_DOWN:
+                    pass  # drop
+
+        for piece in pieces:
+            for rect in piece.rects:
+                pg.draw.rect(game_box.surface, piece.color, rect)
 
         game_box.draw_game_box()
 
