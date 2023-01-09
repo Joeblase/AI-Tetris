@@ -4,6 +4,8 @@ import pygame as pg
 import pygame.locals as pgl
 
 from main import clock, display
+from resources.levels import fpg
+import resources.gamefunctions as gf
 import resources.shapes as shp
 
 
@@ -14,7 +16,7 @@ class GameBox:
         self.surface.fill((0, 0, 0))
         self.location = (20, 100)
         self.border_size = 8
-        self.border = pg.Rect((self.location[0] - self.border_size//2, self.location[1] - self.border_size//2),
+        self.border = pg.Rect((self.location[0] - self.border_size // 2, self.location[1] - self.border_size // 2),
                               (self.size[0] + self.border_size, self.size[1] + self.border_size))
 
     def draw_game_box(self):
@@ -27,11 +29,15 @@ def run():
     background = pg.image.load('data/background.png')
     game_box = GameBox()
     pieces = [shp.random_shape()]
+    move_counter = 0
     level = 1
 
     while True:
+
         clock.tick(60)
+
         display.blit(background, (0, 0))
+        game_box.surface.fill((0, 0, 0))
 
         for event in pg.event.get():
             if event.type == pgl.QUIT or event.type == pgl.WINDOWCLOSE:
@@ -49,8 +55,11 @@ def run():
                 if event.key == pgl.K_DOWN:
                     pass  # drop
 
-        for rect in pieces[-1].rects:
-            rect.move(0, 26)
+        if move_counter == fpg[level]:
+            gf.move_down(pieces[-1])
+            move_counter = 0
+
+        move_counter += 1
 
         for piece in pieces:
             for rect in piece.rects:

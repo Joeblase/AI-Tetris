@@ -1,4 +1,4 @@
-frames_per_gridcell = {
+fpg = {
     1: 48,
     2: 43,
     3: 38,
