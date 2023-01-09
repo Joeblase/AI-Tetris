@@ -1,6 +1,7 @@
-import pygame as pg
-from pygame.locals import *
 import sys
+
+import pygame as pg
+import pygame.locals as pgl
 
 from main import clock, display
 import resources.shapes as shp
@@ -21,17 +22,11 @@ class GameBox:
         display.blit(self.surface, self.location)
 
 
-class Piece:
-    def __init__(self, shape):
-        self.rects = shape[0]
-        self.color = shape[1]
-
-
 def run():
 
     background = pg.image.load('data/background.png')
     game_box = GameBox()
-    pieces = [Piece(shp.random_shape())]
+    pieces = [shp.random_shape()]
     level = 1
 
     while True:
@@ -39,20 +34,23 @@ def run():
         display.blit(background, (0, 0))
 
         for event in pg.event.get():
-            if event.type == QUIT or event.type == WINDOWCLOSE:
+            if event.type == pgl.QUIT or event.type == pgl.WINDOWCLOSE:
                 pg.quit()
                 sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_LEFT:
+            if event.type == pgl.KEYDOWN:
+                if event.key == pgl.K_LEFT:
                     pass  # move left
-                if event.key == K_RIGHT:
+                if event.key == pgl.K_RIGHT:
                     pass  # move right
-                if event.key in (K_UP, K_x):
+                if event.key == pgl.K_UP or event.key == pgl.K_x:
                     pass  # rotate clockwise
-                if event.key in (K_RCTRL, K_LCTRL, K_z):
+                if event.key == pgl.K_RCTRL or event.key == pgl.K_LCTRL or event.key == pgl.K_z:
                     pass  # rotate counterclockwise
-                if event.key == K_DOWN:
+                if event.key == pgl.K_DOWN:
                     pass  # drop
+
+        for rect in pieces[-1].rects:
+            rect.move(0, 26)
 
         for piece in pieces:
             for rect in piece.rects:

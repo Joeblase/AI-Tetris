@@ -2,6 +2,12 @@ import pygame as pg
 import random as rand
 
 
+class Piece:
+    def __init__(self, shape):
+        self.rects = shape[0]
+        self.color = shape[1]
+
+
 def box(x_pos, y_pos):
     return pg.Rect((x_pos * 26 + 78, y_pos * 26), (25, 25))
 
@@ -18,16 +24,16 @@ z_block = ([box(0, 0), box(1, 0), box(1, 1), box(2, 1)], (240, 0, 0))
 def random_shape():
     match rand.randrange(7):
         case 0:
-            return i_block
+            return Piece(i_block)
         case 1:
-            return j_block
+            return Piece(j_block)
         case 2:
-            return l_block
+            return Piece(l_block)
         case 3:
-            return o_block
+            return Piece(o_block)
         case 4:
-            return s_block
+            return Piece(s_block)
         case 5:
-            return t_block
+            return Piece(t_block)
         case 6:
-            return z_block
+            return Piece(z_block)
