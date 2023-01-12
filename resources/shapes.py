@@ -2,38 +2,80 @@ import pygame as pg
 import random as rand
 
 
-class Piece:
-    def __init__(self, shape):
-        self.rects = shape[0]
-        self.color = shape[1]
-
-
 def box(x_pos, y_pos):
     return pg.Rect((x_pos * 26 + 78, y_pos * 26), (25, 25))
 
 
-i_block = ([box(0, 0), box(1, 0), box(2, 0), box(3, 0)], (0, 240, 240))
-j_block = ([box(0, 0), box(1, 0), box(2, 0), box(2, 1)], (0, 0, 240))
-l_block = ([box(0, 0), box(1, 0), box(2, 0), box(0, 1)], (240, 160, 0))
-o_block = ([box(0, 0), box(1, 0), box(0, 1), box(1, 1)], (240, 240, 0))
-s_block = ([box(1, 0), box(2, 0), box(0, 1), box(1, 1)], (0, 240, 0))
-t_block = ([box(1, 0), box(0, 1), box(1, 1), box(2, 1)], (160, 0, 240))
-z_block = ([box(0, 0), box(1, 0), box(1, 1), box(2, 1)], (240, 0, 0))
+class I_Block:
+    def __init__(self):
+        self.rects = [box(0, 0), box(1, 0), box(2, 0), box(3, 0)]
+        self.color = (0, 0, 240)
+
+    def rotate(self):
+        pass
+
+
+class J_Block:
+    def __init__(self):
+        self.rects = [box(0, 0), box(1, 0), box(2, 0), box(2, 1)]
+        self.color = (0, 0, 240)
+
+    def rotate(self):
+        pass
+
+
+class L_Block:
+    def __init__(self):
+        self.rects = [box(0, 0), box(1, 0), box(2, 0), box(0, 1)]
+        self.color = (240, 160, 0)
+
+
+class O_Block:
+    def __init__(self):
+        self.rects = [box(0, 0), box(1, 0), box(0, 1), box(1, 1)]
+        self.color = (240, 240, 0)
+
+    def rotate(self):
+        pass
+
+
+class S_Block:
+    def __init__(self):
+        self.rects = [box(1, 0), box(2, 0), box(0, 1), box(1, 1)]
+        self.color = (0, 240, 0)
+
+
+class T_Block:
+    def __init__(self):
+        self.rects = [box(1, 0), box(0, 1), box(1, 1), box(2, 1)]
+        self.color = (160, 0, 240)
+
+    def rotate(self):
+        pass
+
+
+class Z_Block:
+    def __init__(self):
+        self.rects = [box(0, 0), box(1, 0), box(1, 1), box(2, 1)]
+        self.color = (240, 0, 0)
+
+    def rotate(self):
+        pass
 
 
 def random_shape():
     match rand.randrange(7):
         case 0:
-            return Piece(i_block)
+            return I_Block()
         case 1:
-            return Piece(j_block)
+            return J_Block()
         case 2:
-            return Piece(l_block)
+            return L_Block()
         case 3:
-            return Piece(o_block)
+            return O_Block()
         case 4:
-            return Piece(s_block)
+            return S_Block()
         case 5:
-            return Piece(t_block)
+            return T_Block()
         case 6:
-            return Piece(z_block)
+            return Z_Block()
