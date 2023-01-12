@@ -29,7 +29,7 @@ def run():
     background = pg.image.load('data/background.png')
     game_box = GameBox()
     pieces = [shp.random_shape()]
-    move_counter = 0
+    frame_conuter = 0
     level = 1
 
     while True:
@@ -45,9 +45,9 @@ def run():
                 sys.exit()
             if event.type == pgl.KEYDOWN:
                 if event.key == pgl.K_LEFT:
-                    pass  # move left
+                    gf.move_sideways(pieces[-1], 'left')
                 if event.key == pgl.K_RIGHT:
-                    pass  # move right
+                    gf.move_sideways(pieces[-1], 'right')
                 if event.key == pgl.K_UP or event.key == pgl.K_x:
                     pass  # rotate clockwise
                 if event.key == pgl.K_RCTRL or event.key == pgl.K_LCTRL or event.key == pgl.K_z:
@@ -55,11 +55,10 @@ def run():
                 if event.key == pgl.K_DOWN:
                     pass  # drop
 
-        if move_counter == fpg[level]:
+        if frame_conuter == fpg[level]:
             gf.move_down(pieces[-1])
-            move_counter = 0
-
-        move_counter += 1
+            frame_conuter = 0
+        frame_conuter += 1
 
         for piece in pieces:
             for rect in piece.rects:
