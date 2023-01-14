@@ -7,218 +7,167 @@ def box(x_pos, y_pos):
     return pg.Rect((x_pos * 26 + 78, y_pos * 26), (25, 25))
 
 
-class BlockI:
-    def __init__(self):
-        self.rects = [box(0, 0), box(1, 0), box(2, 0), box(3, 0)]
-        self.orientation = 1
-        self.color = (0, 0, 240)
+class Piece:
+    def __init__(self, rects, color, orientations):
+        self.current_orientation = 1
+        self.rects = rects
+        self.color = color
+        self.total_orientations = orientations
 
     def rotate(self, dropped_pieces):
-        match self.orientation:
-            case 1:
-                new_rects = [self.rects[0].move((2*26, -2*26)),
-                             self.rects[1].move((1*26, -1*26)),
-                             self.rects[2],
-                             self.rects[3].move((-1*26, 1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 2
-            case 2:
-                new_rects = [self.rects[0].move((-2*26, 2*26)),
-                             self.rects[1].move((-1*26, 1*26)),
-                             self.rects[2],
-                             self.rects[3].move((1*26, -1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 1
+        new_rects = self.get_rotations()
+        if gf.moveable(new_rects, dropped_pieces):
+            if self.current_orientation == self.total_orientations:
+                self.current_orientation = 1
+            else:
+                self.current_orientation += 1
+            self.rects = new_rects.copy()
 
 
-class BlockJ:
+class BlockI(Piece):
     def __init__(self):
-        self.rects = [box(0, 0), box(1, 0), box(2, 0), box(2, 1)]
-        self.orientation = 1
-        self.color = (0, 0, 240)
+        super().__init__([box(0, 0), box(1, 0), box(2, 0), box(3, 0)], (0, 240, 240), 2)
 
-    def rotate(self, dropped_pieces):
-        match self.orientation:
+    def get_rotations(self):
+        match self.current_orientation:
             case 1:
-                new_rects = [self.rects[0].move((1*26, -1*26)),
-                             self.rects[1],
-                             self.rects[2].move((-1*26, 1*26)),
-                             self.rects[3].move((-2*26, 0))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 2
+                return [self.rects[0].move((2*26, -2*26)),
+                        self.rects[1].move((26, -26)),
+                        self.rects[2],
+                        self.rects[3].move((-26, 26))]
             case 2:
-                new_rects = [self.rects[0].move((1*26, 1*26)),
-                             self.rects[1],
-                             self.rects[2].move((-1*26, -1*26)),
-                             self.rects[3].move((0, -2*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 3
+                return [self.rects[0].move((-2*26, 2*26)),
+                        self.rects[1].move((-26, 26)),
+                        self.rects[2],
+                        self.rects[3].move((26, -26))]
+
+
+class BlockJ(Piece):
+    def __init__(self):
+        super().__init__([box(0, 0), box(1, 0), box(2, 0), box(2, 1)], (0, 0, 240), 4)
+
+    def get_rotations(self):
+        match self.current_orientation:
+            case 1:
+                return [self.rects[0].move((26, -26)),
+                        self.rects[1],
+                        self.rects[2].move((-26, 26)),
+                        self.rects[3].move((-2*26, 0))]
+            case 2:
+                return [self.rects[0].move((26, 26)),
+                        self.rects[1],
+                        self.rects[2].move((-26, -26)),
+                        self.rects[3].move((0, -2*26))]
             case 3:
-                new_rects = [self.rects[0].move((-1*26, 1*26)),
-                             self.rects[1],
-                             self.rects[2].move((1*26, -1*26)),
-                             self.rects[3].move((2*26, 0))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 4
+                return [self.rects[0].move((-26, 26)),
+                        self.rects[1],
+                        self.rects[2].move((26, -26)),
+                        self.rects[3].move((2*26, 0))]
             case 4:
-                new_rects = [self.rects[0].move((-1*26, -1*26)),
-                             self.rects[1],
-                             self.rects[2].move((1*26, 1*26)),
-                             self.rects[3].move((0, 2*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 1
+                return [self.rects[0].move((-26, -26)),
+                        self.rects[1],
+                        self.rects[2].move((26, 26)),
+                        self.rects[3].move((0, 2*26))]
 
 
-class BlockL:
+class BlockL(Piece):
     def __init__(self):
-        self.rects = [box(0, 0), box(1, 0), box(2, 0), box(0, 1)]
-        self.orientation = 1
-        self.color = (240, 160, 0)
+        super().__init__([box(0, 0), box(1, 0), box(2, 0), box(0, 1)], (240, 160, 0), 4)
 
-    def rotate(self, dropped_pieces):
-        match self.orientation:
+    def get_rotations(self):
+        match self.current_orientation:
             case 1:
-                new_rects = [self.rects[0].move((1*26, -1*26)),
-                             self.rects[1],
-                             self.rects[2].move((-1*26, 1*26)),
-                             self.rects[3].move((0, -2*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 2
+                return [self.rects[0].move((26, -26)),
+                        self.rects[1],
+                        self.rects[2].move((-26, 26)),
+                        self.rects[3].move((0, -2*26))]
             case 2:
-                new_rects = [self.rects[0].move((1*26, 1*26)),
-                             self.rects[1],
-                             self.rects[2].move((-1*26, -1*26)),
-                             self.rects[3].move((2*26, 0))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 3
+                return [self.rects[0].move((26, 26)),
+                        self.rects[1],
+                        self.rects[2].move((-26, -26)),
+                        self.rects[3].move((2*26, 0))]
             case 3:
-                new_rects = [self.rects[0].move((-1*26, 26)),
-                             self.rects[1],
-                             self.rects[2].move((1*26, -1*26)),
-                             self.rects[3].move((0, 2*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 4
+                return [self.rects[0].move((-26, 26)),
+                        self.rects[1],
+                        self.rects[2].move((26, -26)),
+                        self.rects[3].move((0, 2*26))]
             case 4:
-                new_rects = [self.rects[0].move(-1*26, -26),
-                             self.rects[1],
-                             self.rects[2].move((1*26, 1*26)),
-                             self.rects[3].move((-2*26, 0))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 1
+                return [self.rects[0].move(-26, -26),
+                        self.rects[1],
+                        self.rects[2].move((26, 26)),
+                        self.rects[3].move((-2*26, 0))]
 
 
-class BlockO:
+class BlockO(Piece):
     def __init__(self):
-        self.rects = [box(0, 0), box(1, 0), box(0, 1), box(1, 1)]
-        self.orientation = 1
-        self.color = (240, 240, 0)
+        super().__init__([box(0, 0), box(1, 0), box(0, 1), box(1, 1)], (240, 240, 0), 0)
 
     def rotate(self, droppped_pieces):
         pass
 
 
-class BlockS:
+class BlockS(Piece):
     def __init__(self):
-        self.rects = [box(1, 0), box(2, 0), box(0, 1), box(1, 1)]
-        self.orientation = 1
-        self.color = (0, 240, 0)
+        super().__init__([box(1, 0), box(2, 0), box(0, 1), box(1, 1)], (0, 240, 0), 2)
 
-    def rotate(self, dropped_pieces):
-        match self.orientation:
+    def get_rotations(self):
+        match self.current_orientation:
             case 1:
-                new_rects = [self.rects[0],
-                             self.rects[1].move((-1*26, 1*26)),
-                             self.rects[2].move((0, -2*26)),
-                             self.rects[3].move((-1*26, -1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 2
+                return [self.rects[0],
+                        self.rects[1].move((-26, 26)),
+                        self.rects[2].move((0, -2*26)),
+                        self.rects[3].move((-26, -26))]
             case 2:
-                new_rects = [self.rects[0],
-                             self.rects[1].move((1*26, -1*26)),
-                             self.rects[2].move((0, 2*26)),
-                             self.rects[3].move((1*26, 1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 1
+                return [self.rects[0],
+                        self.rects[1].move((26, -26)),
+                        self.rects[2].move((0, 2*26)),
+                        self.rects[3].move((26, 26))]
 
 
-class BlockT:
+class BlockT(Piece):
     def __init__(self):
-        self.rects = [box(0, 1), box(1, 1), box(2, 1), box(1, 0)]
-        self.orientation = 1
-        self.color = (160, 0, 240)
+        super().__init__([box(0, 1), box(1, 1), box(2, 1), box(1, 0)], (160, 0, 240), 4)
 
-    def rotate(self, dropped_pieces):
-        match self.orientation:
+    def get_rotations(self):
+        match self.current_orientation:
             case 1:
-                new_rects = [self.rects[0].move((1*26, -1*26)),
-                             self.rects[1],
-                             self.rects[2].move((-1*26, 1*26)),
-                             self.rects[3].move((1*26, 1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 2
+                return [self.rects[0].move((26, -26)),
+                        self.rects[1],
+                        self.rects[2].move((-26, 26)),
+                        self.rects[3].move((26, 26))]
             case 2:
-                new_rects = [self.rects[0].move((1*26, 1*26)),
-                             self.rects[1],
-                             self.rects[2].move((-1*26, -1*26)),
-                             self.rects[3].move((-1*26, 1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 3
+                return [self.rects[0].move((26, 26)),
+                        self.rects[1],
+                        self.rects[2].move((-26, -26)),
+                        self.rects[3].move((-26, 26))]
             case 3:
-                new_rects = [self.rects[0].move((-1*26, 1*26)),
-                             self.rects[1],
-                             self.rects[2].move((1*26, -1*26)),
-                             self.rects[3].move((-1*26, -1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 4
+                return [self.rects[0].move((-26, 26)),
+                        self.rects[1],
+                        self.rects[2].move((26, -26)),
+                        self.rects[3].move((-26, -26))]
             case 4:
-                new_rects = [self.rects[0].move((-1*26, -1*26)),
-                             self.rects[1],
-                             self.rects[2].move((1*26, 1*26)),
-                             self.rects[3].move((1*26, -1*26))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 1
+                return [self.rects[0].move((-26, -26)),
+                        self.rects[1],
+                        self.rects[2].move((26, 26)),
+                        self.rects[3].move((26, -26))]
 
 
-class BlockZ:
+class BlockZ(Piece):
     def __init__(self):
-        self.rects = [box(0, 0), box(1, 0), box(1, 1), box(2, 1)]
-        self.orientation = 1
-        self.color = (240, 0, 0)
+        super().__init__([box(0, 0), box(1, 0), box(1, 1), box(2, 1)], (240, 0, 0), 2)
 
-    def rotate(self, dropped_pieces):
-        match self.orientation:
+    def get_rotations(self):
+        match self.current_orientation:
             case 1:
-                new_rects = [self.rects[0].move((1*26, -1*26)),
-                             self.rects[1],
-                             self.rects[2].move((-1*26, -1*26)),
-                             self.rects[3].move((-2*26, 0))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 2
+                return [self.rects[0].move((26, -26)),
+                        self.rects[1],
+                        self.rects[2].move((-26, -26)),
+                        self.rects[3].move((-2*26, 0))]
             case 2:
-                new_rects = [self.rects[0].move((-1*26, 1*26)),
-                             self.rects[1],
-                             self.rects[2].move((1*26, 1*26)),
-                             self.rects[3].move((2*26, 0))]
-                if gf.moveable(new_rects, dropped_pieces):
-                    self.rects = new_rects.copy()
-                    self.orientation = 1
+                return [self.rects[0].move((-26, 26)),
+                        self.rects[1],
+                        self.rects[2].move((26, 26)),
+                        self.rects[3].move((2*26, 0))]
 
 
 def random_shape():

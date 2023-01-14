@@ -29,7 +29,7 @@ def move_down(game):
     new_rects = []
     for rect in game.piece.rects:
         new_rects.append(rect.move(0, 26))
-    if moveable(new_rects, game.dropped_pieces):  # move piece down if moveable
+    if moveable(new_rects, game.dropped_pieces):
         game.piece.rects = new_rects.copy()
     else:
         game.dropped_pieces.append(game.piece)

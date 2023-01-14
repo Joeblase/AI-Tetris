@@ -28,7 +28,7 @@ class Game:
     def __init__(self):
         self.level = 1
         self.drop_type = 'normal'
-        self.piece = p.random_shape()
+        self.piece = p.BlockI()  # p.random_shape()
         self.dropped_pieces = []
         self.frame_counter = 0
 
