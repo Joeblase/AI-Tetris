@@ -9,9 +9,9 @@ import resources.gamefunctions as gf
 import resources.shapes as shp
 
 
-class GameBox:
+class GameBox:  # object with properties and surface for the box which the game occurs in
     def __init__(self):
-        self.size = (259, 509)
+        self.size = (259, 519)
         self.surface = pg.Surface(self.size)
         self.surface.fill((0, 0, 0))
         self.location = (20, 100)
@@ -24,13 +24,21 @@ class GameBox:
         display.blit(self.surface, self.location)
 
 
+class Game:
+    def __init__(self):
+        self.level = 1
+        self.drop_type = 'normal'
+        self.controlled_piece = shp.random_shape()
+        self.dropped_pieces = []
+        self.frame_counter = 0
+
+
 def run():
 
-    background = pg.image.load('data/background.png')
     game_box = GameBox()
-    pieces = [shp.random_shape()]
-    frame_conuter = 0
-    level = 1
+    game = Game()
+
+    background = pg.image.load('data/background.png')
 
     while True:
 
@@ -39,28 +47,42 @@ def run():
         display.blit(background, (0, 0))
         game_box.surface.fill((0, 0, 0))
 
+        display.blit(gf.text('lines'), (300, 100))
+
         for event in pg.event.get():
             if event.type == pgl.QUIT or event.type == pgl.WINDOWCLOSE:
                 pg.quit()
                 sys.exit()
             if event.type == pgl.KEYDOWN:
-                if event.key == pgl.K_LEFT:
-                    gf.move_sideways(pieces[-1], 'left')
-                if event.key == pgl.K_RIGHT:
-                    gf.move_sideways(pieces[-1], 'right')
-                if event.key == pgl.K_UP or event.key == pgl.K_x:
-                    pass  # rotate clockwise
-                if event.key == pgl.K_RCTRL or event.key == pgl.K_LCTRL or event.key == pgl.K_z:
-                    pass  # rotate counterclockwise
-                if event.key == pgl.K_DOWN:
-                    pass  # drop
+                if event.key == pgl.K_LEFT or event.key == pgl.K_a:
+                    gf.move_sideways(game.controlled_piece, 'left')
+                if event.key == pgl.K_RIGHT or event.key == pgl.K_d:
+                    gf.move_sideways(game.controlled_piece, 'right')
+                if event.key == pgl.K_UP or event.key == pgl.K_w:
+                    pass  # rotate
+                if event.key == pgl.K_LSHIFT:
+                    game.drop_type = 'hard'
+                if event.key == pgl.K_DOWN or event.key == pgl.K_s:
+                    game.drop_type = 'soft'
+            if event.type == pgl.KEYUP:
+                if event.key == pgl.K_DOWN or event.key == pgl.K_s:
+                    game.drop_type = 'normal'
 
-        if frame_conuter == fpg[level]:
-            gf.move_down(pieces[-1])
-            frame_conuter = 0
-        frame_conuter += 1
+        match game.drop_type:
+            case 'normal':
+                if game.frame_counter >= fpg[game.level]:
+                    gf.move(game)
+            case 'soft':
+                if game.frame_counter >= 2:
+                    gf.move(game)
+            case 'hard':
+                pass
+        game.frame_counter += 1
 
-        for piece in pieces:
+        for rect in game.controlled_piece.rects:
+            pg.draw.rect(game_box.surface, game.controlled_piece.color, rect)
+
+        for piece in game.dropped_pieces:
             for rect in piece.rects:
                 pg.draw.rect(game_box.surface, piece.color, rect)
 

@@ -1,4 +1,4 @@
-fpg = {
+fpg = {  # Amount of frames for one downward movement (frames per gridcell) for each level
     1: 48,
     2: 43,
     3: 38,
@@ -8,10 +8,10 @@ fpg = {
     7: 18,
     8: 13,
     9: 8,
-    10: 6,
-    11: 5,
-    12: 4,
-    13: 3,
-    14: 2,
-    15: 1
+    10: 7,
+    11: 6,
+    12: 5,
+    13: 4,
+    14: 3,
+    15: 2
 }
