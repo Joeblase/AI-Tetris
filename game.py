@@ -6,7 +6,7 @@ import pygame.locals as pgl
 from main import clock, display
 from resources.levels import fpg
 import resources.gamefunctions as gf
-import resources.shapes as shp
+import resources.pieces as p
 
 
 class GameBox:  # object with properties and surface for the box which the game occurs in
@@ -28,7 +28,7 @@ class Game:
     def __init__(self):
         self.level = 1
         self.drop_type = 'normal'
-        self.piece = shp.random_shape()
+        self.piece = p.random_shape()
         self.dropped_pieces = []
         self.frame_counter = 0
 
@@ -59,7 +59,7 @@ def run():
                 if event.key == pgl.K_RIGHT or event.key == pgl.K_d:
                     gf.move_sideways(game, 'right')
                 if event.key == pgl.K_UP or event.key == pgl.K_w:
-                    pass  # rotate
+                    game.piece.rotate(game.dropped_pieces)
                 if event.key == pgl.K_LSHIFT:
                     game.drop_type = 'hard'
                 if event.key == pgl.K_DOWN or event.key == pgl.K_s:
@@ -71,10 +71,10 @@ def run():
         match game.drop_type:
             case 'normal':
                 if game.frame_counter >= fpg[game.level]:
-                    gf.move(game)
+                    gf.move_down(game)
             case 'soft':
                 if game.frame_counter >= 2:
-                    gf.move(game)
+                    gf.move_down(game)
             case 'hard':
                 pass
         game.frame_counter += 1
