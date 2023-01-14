@@ -6,11 +6,7 @@ def box(x_pos, y_pos):
     return pg.Rect((x_pos * 26 + 78, y_pos * 26), (25, 25))
 
 
-class Piece:
-    pass
-
-
-class I_Block(Piece):
+class BlockI:
     def __init__(self):
         self.rects = [box(0, 0), box(1, 0), box(2, 0), box(3, 0)]
         self.color = (0, 0, 240)
@@ -19,7 +15,7 @@ class I_Block(Piece):
         pass
 
 
-class J_Block(Piece):
+class BlockJ:
     def __init__(self):
         self.rects = [box(0, 0), box(1, 0), box(2, 0), box(2, 1)]
         self.color = (0, 0, 240)
@@ -28,13 +24,13 @@ class J_Block(Piece):
         pass
 
 
-class L_Block(Piece):
+class BlockL:
     def __init__(self):
         self.rects = [box(0, 0), box(1, 0), box(2, 0), box(0, 1)]
         self.color = (240, 160, 0)
 
 
-class O_Block(Piece):
+class BlockO:
     def __init__(self):
         self.rects = [box(0, 0), box(1, 0), box(0, 1), box(1, 1)]
         self.color = (240, 240, 0)
@@ -43,13 +39,13 @@ class O_Block(Piece):
         pass
 
 
-class S_Block(Piece):
+class BlockS:
     def __init__(self):
         self.rects = [box(1, 0), box(2, 0), box(0, 1), box(1, 1)]
         self.color = (0, 240, 0)
 
 
-class T_Block(Piece):
+class BlockT:
     def __init__(self):
         self.rects = [box(1, 0), box(0, 1), box(1, 1), box(2, 1)]
         self.color = (160, 0, 240)
@@ -58,7 +54,7 @@ class T_Block(Piece):
         pass
 
 
-class Z_Block(Piece):
+class BlockZ:
     def __init__(self):
         self.rects = [box(0, 0), box(1, 0), box(1, 1), box(2, 1)]
         self.color = (240, 0, 0)
@@ -70,16 +66,16 @@ class Z_Block(Piece):
 def random_shape():
     match rand.randrange(7):
         case 0:
-            return I_Block()
+            return BlockI()
         case 1:
-            return J_Block()
+            return BlockJ()
         case 2:
-            return L_Block()
+            return BlockL()
         case 3:
-            return O_Block()
+            return BlockO()
         case 4:
-            return S_Block()
+            return BlockS()
         case 5:
-            return T_Block()
+            return BlockT()
         case 6:
-            return Z_Block()
+            return BlockZ()

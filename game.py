@@ -28,7 +28,7 @@ class Game:
     def __init__(self):
         self.level = 1
         self.drop_type = 'normal'
-        self.controlled_piece = shp.random_shape()
+        self.piece = shp.random_shape()
         self.dropped_pieces = []
         self.frame_counter = 0
 
@@ -55,9 +55,9 @@ def run():
                 sys.exit()
             if event.type == pgl.KEYDOWN:
                 if event.key == pgl.K_LEFT or event.key == pgl.K_a:
-                    gf.move_sideways(game.controlled_piece, 'left')
+                    gf.move_sideways(game, 'left')
                 if event.key == pgl.K_RIGHT or event.key == pgl.K_d:
-                    gf.move_sideways(game.controlled_piece, 'right')
+                    gf.move_sideways(game, 'right')
                 if event.key == pgl.K_UP or event.key == pgl.K_w:
                     pass  # rotate
                 if event.key == pgl.K_LSHIFT:
@@ -79,8 +79,8 @@ def run():
                 pass
         game.frame_counter += 1
 
-        for rect in game.controlled_piece.rects:
-            pg.draw.rect(game_box.surface, game.controlled_piece.color, rect)
+        for rect in game.piece.rects:
+            pg.draw.rect(game_box.surface, game.piece.color, rect)
 
         for piece in game.dropped_pieces:
             for rect in piece.rects:
