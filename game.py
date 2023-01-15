@@ -28,11 +28,21 @@ class Game:
     def __init__(self):
         self.lines = 0
         self.level = 1
-        self.drop_pause = 0
+
+        self.drop_counter = 0
+        self.drop_pause_counter = 0
+        self.removal_counter = 0
+
         self.drop_type = 'normal'
-        self.piece = p.starting_piece()
+
         self.dropped_pieces = []
-        self.frame_counter = 0
+        self.shifted_dropped_pieces = []
+        self.removal_pieces = []  # Pieces to be removed
+
+        self.removal_rows = 0
+
+        self.piece = p.starting_piece()
+
         self.pieces_per_row = [0 for _ in range(20)]
 
 
@@ -62,7 +72,8 @@ def run():
                 if event.key == pgl.K_RIGHT or event.key == pgl.K_d:
                     gf.move_sideways(game, 'right')
                 if event.key == pgl.K_UP or event.key == pgl.K_w:
-                    game.piece.rotate(game.dropped_pieces)
+                    if game.piece is not None:
+                        game.piece.rotate(game.dropped_pieces)
                 if event.key == pgl.K_LSHIFT:
                     game.drop_type = 'hard'
                 if event.key == pgl.K_DOWN or event.key == pgl.K_s:
@@ -71,32 +82,42 @@ def run():
                 if event.key == pgl.K_DOWN or event.key == pgl.K_s:
                     game.drop_type = 'normal'
 
-        if game.drop_pause == 0:
+        if game.drop_pause_counter == 0:
             if not game.piece:
                 game.piece = p.random_piece()
             match game.drop_type:
                 case 'normal':
-                    if game.frame_counter >= fpg[game.level]:
+                    if game.drop_counter >= fpg[game.level]:
                         gf.move_down(game)
                 case 'soft':
-                    if game.frame_counter >= 2:
+                    if game.drop_counter >= 2:
                         gf.move_down(game)
                 case 'hard':
                     pass
-            game.frame_counter += 1
+            game.drop_counter += 1
 
-        gf.remove_full_rows(game)
+        if game.drop_pause_counter > 0:
+            game.drop_pause_counter -= 1
+
+        gf.remove_pieces(game)
+
+        if game.removal_pieces:
+            if game.removal_counter % 3 == 0:
+                for _ in range(game.removal_rows * 2):
+                    game.removal_pieces.pop(len(game.removal_pieces)//2)
+            if not game.removal_pieces:  # occurs when pieces are done removing
+                game.lines += 1
+                if game.lines % 10 == 0:
+                    game.level += 1
+                game.dropped_pieces = game.shifted_dropped_pieces.copy()
+            game.removal_counter += 1
 
         # draw pieces to game box
-        if game.piece:
-            for rect in game.piece.rects:
-                pg.draw.rect(game_box.surface, game.piece.color, rect)
+        gf.draw_piece(game_box.surface, game.piece)
         for piece in game.dropped_pieces:
-            for rect in piece.rects:
-                pg.draw.rect(game_box.surface, piece.color, rect)
-
-        if game.drop_pause > 0:
-            game.drop_pause -= 1
+            gf.draw_piece(game_box.surface, piece)
+        for piece in game.removal_pieces:
+            gf.draw_piece(game_box.surface, piece)
 
         game_box.draw_game_box()
 
