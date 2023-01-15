@@ -20,17 +20,20 @@ class GameBox:  # object with properties and surface for the box which the game 
                               (self.size[0] + self.border_size, self.size[1] + self.border_size))
 
     def draw_game_box(self):
-        pg.draw.rect(display, (180, 180, 180), self.border)
+        pg.draw.rect(display, (180, 180, 180), self .border)
         display.blit(self.surface, self.location)
 
 
 class Game:
     def __init__(self):
+        self.lines = 0
         self.level = 1
+        self.drop_pause = 0
         self.drop_type = 'normal'
-        self.piece = p.BlockI()  # p.random_shape()
+        self.piece = p.starting_piece()
         self.dropped_pieces = []
         self.frame_counter = 0
+        self.pieces_per_row = [0 for _ in range(20)]
 
 
 def run():
@@ -68,23 +71,32 @@ def run():
                 if event.key == pgl.K_DOWN or event.key == pgl.K_s:
                     game.drop_type = 'normal'
 
-        match game.drop_type:
-            case 'normal':
-                if game.frame_counter >= fpg[game.level]:
-                    gf.move_down(game)
-            case 'soft':
-                if game.frame_counter >= 2:
-                    gf.move_down(game)
-            case 'hard':
-                pass
-        game.frame_counter += 1
+        if game.drop_pause == 0:
+            if not game.piece:
+                game.piece = p.random_piece()
+            match game.drop_type:
+                case 'normal':
+                    if game.frame_counter >= fpg[game.level]:
+                        gf.move_down(game)
+                case 'soft':
+                    if game.frame_counter >= 2:
+                        gf.move_down(game)
+                case 'hard':
+                    pass
+            game.frame_counter += 1
 
-        for rect in game.piece.rects:
-            pg.draw.rect(game_box.surface, game.piece.color, rect)
+        gf.remove_full_rows(game)
 
+        # draw pieces to game box
+        if game.piece:
+            for rect in game.piece.rects:
+                pg.draw.rect(game_box.surface, game.piece.color, rect)
         for piece in game.dropped_pieces:
             for rect in piece.rects:
                 pg.draw.rect(game_box.surface, piece.color, rect)
+
+        if game.drop_pause > 0:
+            game.drop_pause -= 1
 
         game_box.draw_game_box()
 

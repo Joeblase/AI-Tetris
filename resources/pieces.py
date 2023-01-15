@@ -170,19 +170,11 @@ class BlockZ(Piece):
                         self.rects[3].move((2*26, 0))]
 
 
-def random_shape():
-    match random.randrange(7):
-        case 0:
-            return BlockI()
-        case 1:
-            return BlockJ()
-        case 2:
-            return BlockL()
-        case 3:
-            return BlockO()
-        case 4:
-            return BlockS()
-        case 5:
-            return BlockT()
-        case 6:
-            return BlockZ()
+def starting_piece():
+    possible_pieces = [BlockI(), BlockJ(), BlockL(), BlockT()]
+    return possible_pieces[random.randrange(4)]
+
+
+def random_piece():
+    possible_pieces = [BlockI(), BlockJ(), BlockL(), BlockO(), BlockS(), BlockT(), BlockZ()]
+    return possible_pieces[random.randrange(7)]
