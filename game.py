@@ -26,6 +26,8 @@ class GameBox:  # object with properties and surface for the box which the game 
 
 class Game:
     def __init__(self):
+        self.state = 'playing'
+
         self.lines = 0
         self.level = 1
 
@@ -53,6 +55,7 @@ def run():
 
     game_box = GameBox()
     game = Game()
+    r_key, l_shift_key = False, False
 
     background = pg.image.load('data/background.png')
 
@@ -63,6 +66,7 @@ def run():
         display.blit(background, (0, 0))
         game_box.surface.fill((0, 0, 0))
 
+        gf.draw_piece(display, game.next_piece, (290, 585))
         display.blit(gf.text('next', 18), (295, 598))
 
         display.blit(gf.text('lines', 30), (316, 250))
@@ -75,53 +79,70 @@ def run():
                 pg.quit()
                 sys.exit()
             if event.type == pgl.KEYDOWN:
-                if event.key == pgl.K_LEFT or event.key == pgl.K_a:
-                    gf.move_sideways(game, 'left')
-                if event.key == pgl.K_RIGHT or event.key == pgl.K_d:
-                    gf.move_sideways(game, 'right')
-                if event.key == pgl.K_UP or event.key == pgl.K_w:
-                    if game.piece is not None:
-                        game.piece.rotate(game.dropped_pieces)
+                if event.key == pgl.K_r:
+                    r_key = True
                 if event.key == pgl.K_LSHIFT:
-                    game.drop_type = 'hard'
-                if event.key == pgl.K_DOWN or event.key == pgl.K_s:
-                    game.drop_type = 'soft'
+                    l_shift_key = True
             if event.type == pgl.KEYUP:
-                if event.key == pgl.K_DOWN or event.key == pgl.K_s:
-                    game.drop_type = 'normal'
+                if event.key == pgl.K_r:
+                    r_key = False
+                if event.key == pgl.K_LSHIFT:
+                    l_shift_key = False
+            match game.state:
+                case 'playing':
+                    if event.type == pgl.KEYDOWN:
+                        if event.key == pgl.K_LEFT or event.key == pgl.K_a:
+                            gf.move_sideways(game, 'left')
+                        if event.key == pgl.K_RIGHT or event.key == pgl.K_d:
+                            gf.move_sideways(game, 'right')
+                        if event.key == pgl.K_UP or event.key == pgl.K_w:
+                            if game.piece is not None:
+                                game.piece.rotate(game.dropped_pieces)
+                        if event.key == pgl.K_DOWN or event.key == pgl.K_s:
+                            game.drop_type = 'soft'
+                    if event.type == pgl.KEYUP:
+                        if event.key == pgl.K_DOWN or event.key == pgl.K_s:
+                            game.drop_type = 'normal'
 
-        if game.drop_pause_counter == 0:
-            if not game.piece:
-                game.piece = game.next_piece
-                game.next_piece = p.random_piece(game)
-            match game.drop_type:
-                case 'normal':
-                    if game.drop_counter >= fpg[game.level]:
-                        gf.move_down(game)
-                case 'soft':
-                    if game.drop_counter >= 2:
-                        gf.move_down(game)
-                case 'hard':
-                    pass
-            game.drop_counter += 1
+        if r_key and l_shift_key:
+            run()
 
-        if game.drop_pause_counter > 0:
-            game.drop_pause_counter -= 1
+        match game.state:
+            case 'playing':
+                if game.drop_pause_counter == 0:
+                    if not game.piece:
+                        game.piece = game.next_piece
+                        game.next_piece = p.random_piece(game)
+                        if not gf.moveable(game.next_piece.rects, game.dropped_pieces):
+                            game.state = 'lost'
+                    match game.drop_type:
+                        case 'normal':
+                            if game.drop_counter >= fpg[game.level]:
+                                gf.move_down(game)
+                        case 'soft':
+                            if game.drop_counter >= 2:
+                                gf.move_down(game)
+                    game.drop_counter += 1
 
-        gf.remove_pieces(game)
+                if game.drop_pause_counter > 0:
+                    game.drop_pause_counter -= 1
 
-        gf.shift_pieces(game)
+                gf.remove_pieces(game)
+                gf.shift_pieces(game)
 
         # draw pieces to game box
-        gf.draw_piece(game_box.surface, game.piece)
         for piece in game.dropped_pieces:
             gf.draw_piece(game_box.surface, piece)
         for piece in game.removal_pieces:
             gf.draw_piece(game_box.surface, piece)
-
-        # draw next piece to piece preview
-        gf.draw_piece(display, game.next_piece, (290, 585))
+        gf.draw_piece(game_box.surface, game.piece)
 
         game_box.draw_game_box()
+
+        match game.state:
+            case 'lost':
+                display.blit(gf.text('you lost!', 26), (55, 300))
+                display.blit(gf.text('shift + r to restart', 10), (60, 330))
+
 
         pg.display.update()

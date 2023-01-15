@@ -54,17 +54,21 @@ def shift_pieces(game):
             for _ in range(game.removal_rows * 2):
                 game.removal_pieces.pop(len(game.removal_pieces) // 2)
         if not game.removal_pieces:  # occurs when pieces are done removing
-            game.lines += game.removal_rows
-            game.shift_counter += 1
-            if game.level < 15:
-                game.level = game.lines // 10 + 1
-            game.removal_counter = 0
+            on_piece_removal(game)
         game.removal_counter += 1
     if game.shift_counter >= 1:
         game.shift_counter += 1
     if game.shift_counter >= 5:
         game.dropped_pieces = game.shifted_dropped_pieces.copy()
         game.shift_counter = 0
+
+
+def on_piece_removal(game):
+    game.lines += game.removal_rows
+    game.shift_counter += 1
+    if game.level < 15:
+        game.level = game.lines // 10 + 1
+    game.removal_counter = 0
 
 
 def rect_check(rect, dropped_pieces):  # returns true if a rect collides with any dropped pieces
