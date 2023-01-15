@@ -2,18 +2,21 @@ import copy
 
 import pygame as pg
 
-from main import font
+from main import fonts
 import resources.pieces as p
 
 
-def text(text_):
-    return font.render(text_, False, (255, 255, 255))
+def text(text_, size):
+    return fonts[size].render(text_, False, (255, 255, 255))
 
 
-def draw_piece(surface, piece):
+def draw_piece(surface, piece, offset=None):
     if piece:
         for rect in piece.rects:
-            pg.draw.rect(surface, piece.color, rect)
+            if offset is None:
+                pg.draw.rect(surface, piece.color, rect)
+            else:
+                pg.draw.rect(surface, piece.color, rect.move(offset))
 
 
 def remove_pieces(game):
@@ -23,7 +26,7 @@ def remove_pieces(game):
             full_rows.append(row)
 
     if full_rows:
-        game.removal_rows = len(full_rows)  # exists so the game knows how many rects to remove at a time
+        game.removal_rows = len(full_rows)  # this * 2 is rects to remove at a time, also for keeping track of lines
         for row in full_rows:  # shifts game.pieces_per_row
             game.pieces_per_row.pop(row)
             game.pieces_per_row.insert(0, 0)
@@ -43,6 +46,25 @@ def remove_pieces(game):
                 for rect in reversed(piece.rects):
                     if rect.top < row * 26:
                         rect.top += 26
+
+
+def shift_pieces(game):
+    if game.removal_pieces:
+        if game.removal_counter % 3 == 0:
+            for _ in range(game.removal_rows * 2):
+                game.removal_pieces.pop(len(game.removal_pieces) // 2)
+        if not game.removal_pieces:  # occurs when pieces are done removing
+            game.lines += game.removal_rows
+            game.shift_counter += 1
+            if game.level < 15:
+                game.level = game.lines // 10 + 1
+            game.removal_counter = 0
+        game.removal_counter += 1
+    if game.shift_counter >= 1:
+        game.shift_counter += 1
+    if game.shift_counter >= 5:
+        game.dropped_pieces = game.shifted_dropped_pieces.copy()
+        game.shift_counter = 0
 
 
 def rect_check(rect, dropped_pieces):  # returns true if a rect collides with any dropped pieces
@@ -80,7 +102,7 @@ def make_dropped(game):
     for rect in game.piece.rects:
         game.pieces_per_row[rect.top // 26] += 1
     game.piece = None
-    game.drop_pause_counter = 10
+    game.drop_pause_counter = 12
 
 
 def move_sideways(game, direction):

@@ -20,7 +20,7 @@ class GameBox:  # object with properties and surface for the box which the game 
                               (self.size[0] + self.border_size, self.size[1] + self.border_size))
 
     def draw_game_box(self):
-        pg.draw.rect(display, (180, 180, 180), self .border)
+        pg.draw.rect(display, (180, 180, 180), self.border)
         display.blit(self.surface, self.location)
 
 
@@ -32,6 +32,7 @@ class Game:
         self.drop_counter = 0
         self.drop_pause_counter = 0
         self.removal_counter = 0
+        self.shift_counter = 0
 
         self.drop_type = 'normal'
 
@@ -41,7 +42,9 @@ class Game:
 
         self.removal_rows = 0
 
+        self.last_piece = None
         self.piece = p.starting_piece()
+        self.next_piece = p.random_piece(self)
 
         self.pieces_per_row = [0 for _ in range(20)]
 
@@ -60,7 +63,12 @@ def run():
         display.blit(background, (0, 0))
         game_box.surface.fill((0, 0, 0))
 
-        display.blit(gf.text('lines'), (300, 100))
+        display.blit(gf.text('next', 18), (295, 598))
+
+        display.blit(gf.text('lines', 30), (316, 250))
+        display.blit(gf.text(str(game.lines).zfill(5), 30), (316, 280))
+        display.blit(gf.text('level', 30), (316, 320))
+        display.blit(gf.text(str(game.level).zfill(5), 30), (316, 350))
 
         for event in pg.event.get():
             if event.type == pgl.QUIT or event.type == pgl.WINDOWCLOSE:
@@ -84,7 +92,8 @@ def run():
 
         if game.drop_pause_counter == 0:
             if not game.piece:
-                game.piece = p.random_piece()
+                game.piece = game.next_piece
+                game.next_piece = p.random_piece(game)
             match game.drop_type:
                 case 'normal':
                     if game.drop_counter >= fpg[game.level]:
@@ -101,16 +110,7 @@ def run():
 
         gf.remove_pieces(game)
 
-        if game.removal_pieces:
-            if game.removal_counter % 3 == 0:
-                for _ in range(game.removal_rows * 2):
-                    game.removal_pieces.pop(len(game.removal_pieces)//2)
-            if not game.removal_pieces:  # occurs when pieces are done removing
-                game.lines += 1
-                if game.lines % 10 == 0:
-                    game.level += 1
-                game.dropped_pieces = game.shifted_dropped_pieces.copy()
-            game.removal_counter += 1
+        gf.shift_pieces(game)
 
         # draw pieces to game box
         gf.draw_piece(game_box.surface, game.piece)
@@ -118,6 +118,9 @@ def run():
             gf.draw_piece(game_box.surface, piece)
         for piece in game.removal_pieces:
             gf.draw_piece(game_box.surface, piece)
+
+        # draw next piece to piece preview
+        gf.draw_piece(display, game.next_piece, (290, 585))
 
         game_box.draw_game_box()
 

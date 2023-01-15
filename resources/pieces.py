@@ -170,11 +170,18 @@ class BlockZ(Piece):
                         self.rects[3].move((2*26, 0))]
 
 
+def random_piece(game):
+    possible_pieces = [BlockI(), BlockJ(), BlockL(), BlockO(), BlockS(), BlockT(), BlockZ()]
+    num = random.randrange(7)
+    if num != game.last_piece:
+        game.last_piece = num
+        return possible_pieces[num]
+    else:
+        new_num = random.randrange(7)
+        game.last_piece = new_num
+        return possible_pieces[new_num]
+
+
 def starting_piece():
     possible_pieces = [BlockI(), BlockJ(), BlockL(), BlockT()]
     return possible_pieces[random.randrange(4)]
-
-
-def random_piece():
-    possible_pieces = [BlockI(), BlockJ(), BlockL(), BlockO(), BlockS(), BlockT(), BlockZ()]
-    return possible_pieces[random.randrange(7)]

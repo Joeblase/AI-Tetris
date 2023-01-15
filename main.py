@@ -10,7 +10,9 @@ display = pg.display.set_mode((480, 640), 0, 32)
 
 clock = pg.time.Clock()
 
-font = pg.font.Font('data/joystix.ttf', 30)
+fonts = []
+for num in range(1, 51):
+    fonts.append(pg.font.Font('data/joystix.ttf', num))
 
 if __name__ == "__main__":
     game.run()
