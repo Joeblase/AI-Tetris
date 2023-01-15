@@ -110,6 +110,7 @@ def run():
                 if not game.piece:
                     game.piece = game.next_piece
                     game.next_piece = p.random_piece(game)
+                    game.drop_type = 'normal'
                     if not gf.moveable(game.next_piece.rects, game.dropped_pieces):
                         game.state = 'lost'
                 if game.drop_type == 'normal':
