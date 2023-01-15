@@ -2,8 +2,8 @@ import copy
 
 import pygame as pg
 
-from main import fonts
 import resources.pieces as p
+from main import fonts
 
 
 def text(text_, size):
@@ -80,7 +80,7 @@ def rect_check(rect, dropped_pieces):  # returns true if a rect collides with an
 
 
 def moveable(new_rects, dropped_pieces):  # returns true if no rect in new rects is out of bounds or is colliding with
-    for rect in new_rects:                # a dropped piece
+    for rect in new_rects:  # a dropped piece
         if rect.top < 0 or rect.top >= 519:
             return False
         if rect.left < 0 or rect.left >= 259:
@@ -111,11 +111,10 @@ def make_dropped(game):
 
 def move_sideways(game, direction):
     new_rects = []
-    match direction:
-        case 'right':
-            move_offset = 26
-        case 'left':
-            move_offset = -26
+    if direction == 'right':
+        move_offset = 26
+    if direction == 'left':
+        move_offset = -26
     if game.piece is not None:
         for rect in game.piece.rects:
             new_rects.append(rect.move(move_offset, 0))

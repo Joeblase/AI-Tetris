@@ -1,5 +1,7 @@
-import pygame as pg
 import random
+
+import pygame as pg
+
 import resources.gamefunctions as gf
 
 
@@ -29,17 +31,16 @@ class BlockI(Piece):
         super().__init__([box(0, 0), box(1, 0), box(2, 0), box(3, 0)], (0, 240, 240), 2)
 
     def get_rotations(self):
-        match self.current_orientation:
-            case 1:
-                return [self.rects[0].move((2*26, -2*26)),
-                        self.rects[1].move((26, -26)),
-                        self.rects[2],
-                        self.rects[3].move((-26, 26))]
-            case 2:
-                return [self.rects[0].move((-2*26, 2*26)),
-                        self.rects[1].move((-26, 26)),
-                        self.rects[2],
-                        self.rects[3].move((26, -26))]
+        if self.current_orientation == 1:
+            return [self.rects[0].move((2 * 26, -2 * 26)),
+                    self.rects[1].move((26, -26)),
+                    self.rects[2],
+                    self.rects[3].move((-26, 26))]
+        if self.current_orientation == 2:
+            return [self.rects[0].move((-2 * 26, 2 * 26)),
+                    self.rects[1].move((-26, 26)),
+                    self.rects[2],
+                    self.rects[3].move((26, -26))]
 
 
 class BlockJ(Piece):
@@ -47,27 +48,26 @@ class BlockJ(Piece):
         super().__init__([box(0, 0), box(1, 0), box(2, 0), box(2, 1)], (0, 0, 240), 4)
 
     def get_rotations(self):
-        match self.current_orientation:
-            case 1:
-                return [self.rects[0].move((26, -26)),
-                        self.rects[1],
-                        self.rects[2].move((-26, 26)),
-                        self.rects[3].move((-2*26, 0))]
-            case 2:
-                return [self.rects[0].move((26, 26)),
-                        self.rects[1],
-                        self.rects[2].move((-26, -26)),
-                        self.rects[3].move((0, -2*26))]
-            case 3:
-                return [self.rects[0].move((-26, 26)),
-                        self.rects[1],
-                        self.rects[2].move((26, -26)),
-                        self.rects[3].move((2*26, 0))]
-            case 4:
-                return [self.rects[0].move((-26, -26)),
-                        self.rects[1],
-                        self.rects[2].move((26, 26)),
-                        self.rects[3].move((0, 2*26))]
+        if self.current_orientation == 1:
+            return [self.rects[0].move((26, -26)),
+                    self.rects[1],
+                    self.rects[2].move((-26, 26)),
+                    self.rects[3].move((-2 * 26, 0))]
+        if self.current_orientation == 2:
+            return [self.rects[0].move((26, 26)),
+                    self.rects[1],
+                    self.rects[2].move((-26, -26)),
+                    self.rects[3].move((0, -2 * 26))]
+        if self.current_orientation == 3:
+            return [self.rects[0].move((-26, 26)),
+                    self.rects[1],
+                    self.rects[2].move((26, -26)),
+                    self.rects[3].move((2 * 26, 0))]
+        if self.current_orientation == 4:
+            return [self.rects[0].move((-26, -26)),
+                    self.rects[1],
+                    self.rects[2].move((26, 26)),
+                    self.rects[3].move((0, 2 * 26))]
 
 
 class BlockL(Piece):
@@ -75,27 +75,26 @@ class BlockL(Piece):
         super().__init__([box(0, 0), box(1, 0), box(2, 0), box(0, 1)], (240, 160, 0), 4)
 
     def get_rotations(self):
-        match self.current_orientation:
-            case 1:
-                return [self.rects[0].move((26, -26)),
-                        self.rects[1],
-                        self.rects[2].move((-26, 26)),
-                        self.rects[3].move((0, -2*26))]
-            case 2:
-                return [self.rects[0].move((26, 26)),
-                        self.rects[1],
-                        self.rects[2].move((-26, -26)),
-                        self.rects[3].move((2*26, 0))]
-            case 3:
-                return [self.rects[0].move((-26, 26)),
-                        self.rects[1],
-                        self.rects[2].move((26, -26)),
-                        self.rects[3].move((0, 2*26))]
-            case 4:
-                return [self.rects[0].move(-26, -26),
-                        self.rects[1],
-                        self.rects[2].move((26, 26)),
-                        self.rects[3].move((-2*26, 0))]
+        if self.current_orientation == 1:
+            return [self.rects[0].move((26, -26)),
+                    self.rects[1],
+                    self.rects[2].move((-26, 26)),
+                    self.rects[3].move((0, -2 * 26))]
+        if self.current_orientation == 2:
+            return [self.rects[0].move((26, 26)),
+                    self.rects[1],
+                    self.rects[2].move((-26, -26)),
+                    self.rects[3].move((2 * 26, 0))]
+        if self.current_orientation == 3:
+            return [self.rects[0].move((-26, 26)),
+                    self.rects[1],
+                    self.rects[2].move((26, -26)),
+                    self.rects[3].move((0, 2 * 26))]
+        if self.current_orientation == 4:
+            return [self.rects[0].move(-26, -26),
+                    self.rects[1],
+                    self.rects[2].move((26, 26)),
+                    self.rects[3].move((-2 * 26, 0))]
 
 
 class BlockO(Piece):
@@ -111,17 +110,16 @@ class BlockS(Piece):
         super().__init__([box(1, 0), box(2, 0), box(0, 1), box(1, 1)], (0, 240, 0), 2)
 
     def get_rotations(self):
-        match self.current_orientation:
-            case 1:
-                return [self.rects[0],
-                        self.rects[1].move((-26, 26)),
-                        self.rects[2].move((0, -2*26)),
-                        self.rects[3].move((-26, -26))]
-            case 2:
-                return [self.rects[0],
-                        self.rects[1].move((26, -26)),
-                        self.rects[2].move((0, 2*26)),
-                        self.rects[3].move((26, 26))]
+        if self.current_orientation == 1:
+            return [self.rects[0],
+                    self.rects[1].move((-26, 26)),
+                    self.rects[2].move((0, -2 * 26)),
+                    self.rects[3].move((-26, -26))]
+        if self.current_orientation == 2:
+            return [self.rects[0],
+                    self.rects[1].move((26, -26)),
+                    self.rects[2].move((0, 2 * 26)),
+                    self.rects[3].move((26, 26))]
 
 
 class BlockT(Piece):
@@ -129,27 +127,26 @@ class BlockT(Piece):
         super().__init__([box(0, 1), box(1, 1), box(2, 1), box(1, 0)], (160, 0, 240), 4)
 
     def get_rotations(self):
-        match self.current_orientation:
-            case 1:
-                return [self.rects[0].move((26, -26)),
-                        self.rects[1],
-                        self.rects[2].move((-26, 26)),
-                        self.rects[3].move((26, 26))]
-            case 2:
-                return [self.rects[0].move((26, 26)),
-                        self.rects[1],
-                        self.rects[2].move((-26, -26)),
-                        self.rects[3].move((-26, 26))]
-            case 3:
-                return [self.rects[0].move((-26, 26)),
-                        self.rects[1],
-                        self.rects[2].move((26, -26)),
-                        self.rects[3].move((-26, -26))]
-            case 4:
-                return [self.rects[0].move((-26, -26)),
-                        self.rects[1],
-                        self.rects[2].move((26, 26)),
-                        self.rects[3].move((26, -26))]
+        if self.current_orientation == 1:
+            return [self.rects[0].move((26, -26)),
+                    self.rects[1],
+                    self.rects[2].move((-26, 26)),
+                    self.rects[3].move((26, 26))]
+        if self.current_orientation == 2:
+            return [self.rects[0].move((26, 26)),
+                    self.rects[1],
+                    self.rects[2].move((-26, -26)),
+                    self.rects[3].move((-26, 26))]
+        if self.current_orientation == 3:
+            return [self.rects[0].move((-26, 26)),
+                    self.rects[1],
+                    self.rects[2].move((26, -26)),
+                    self.rects[3].move((-26, -26))]
+        if self.current_orientation == 4:
+            return [self.rects[0].move((-26, -26)),
+                    self.rects[1],
+                    self.rects[2].move((26, 26)),
+                    self.rects[3].move((26, -26))]
 
 
 class BlockZ(Piece):
@@ -157,17 +154,16 @@ class BlockZ(Piece):
         super().__init__([box(0, 0), box(1, 0), box(1, 1), box(2, 1)], (240, 0, 0), 2)
 
     def get_rotations(self):
-        match self.current_orientation:
-            case 1:
-                return [self.rects[0].move((26, -26)),
-                        self.rects[1],
-                        self.rects[2].move((-26, -26)),
-                        self.rects[3].move((-2*26, 0))]
-            case 2:
-                return [self.rects[0].move((-26, 26)),
-                        self.rects[1],
-                        self.rects[2].move((26, 26)),
-                        self.rects[3].move((2*26, 0))]
+        if self.current_orientation == 1:
+            return [self.rects[0].move((26, -26)),
+                    self.rects[1],
+                    self.rects[2].move((-26, -26)),
+                    self.rects[3].move((-2 * 26, 0))]
+        if self.current_orientation == 2:
+            return [self.rects[0].move((-26, 26)),
+                    self.rects[1],
+                    self.rects[2].move((26, 26)),
+                    self.rects[3].move((2 * 26, 0))]
 
 
 def random_piece(game):
