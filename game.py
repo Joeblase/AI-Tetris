@@ -30,6 +30,7 @@ class Game:
 
         self.lines = 0
         self.level = 1
+        self.score = 0
 
         self.drop_counter = 0
         self.drop_pause_counter = 0
@@ -67,6 +68,9 @@ def run():
 
         gf.draw_piece(display, game.next_piece, (290, 585))
         display.blit(gf.text('next', 18), (295, 598))
+
+        display.blit(gf.text('score', 30), (316, 180))
+        display.blit(gf.text(str(game.score).zfill(5), 30), (316, 210))
 
         display.blit(gf.text('lines', 30), (316, 250))
         display.blit(gf.text(str(game.lines).zfill(5), 30), (316, 280))

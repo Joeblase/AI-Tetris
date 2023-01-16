@@ -64,6 +64,13 @@ def shift_pieces(game):
 
 
 def on_piece_removal(game):
+    line_values = {
+        1: 4,
+        2: 10,
+        3: 30,
+        4: 120,
+    }
+    game.score += line_values[game.removal_rows]*game.level
     game.lines += game.removal_rows
     game.shift_counter += 1
     if game.level < 15:
