@@ -1,4 +1,4 @@
-# AI-Tetris
+# Pygame-Tetris
 A Tetris clone based on Tetris for the NES made with PyGame.
 
 This was created with the intention of implenting an AI to play itself. Right now it is just a tetris clone.
